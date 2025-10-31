@@ -9,6 +9,8 @@ import { engine } from 'express-handlebars';
 import webRouter from './routers/web/index.web.router';
 import hbsEngineConfigOptions from './configs/hbs.config';
 import connectLiveReload from "connect-livereload";
+import cookieParser from 'cookie-parser';
+import { attachUserFromJwtCookie } from './middlewares/web-auth';
 
 const app = express();
 
@@ -37,6 +39,8 @@ function createApp(): express.Express {
 
     app.use(morgan('short'));
     app.use(cors());
+    app.use(cookieParser());
+    app.use(attachUserFromJwtCookie);
     
     if (isDev) {
         app.use(helmet({ contentSecurityPolicy: false }));

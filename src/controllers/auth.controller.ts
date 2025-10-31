@@ -23,7 +23,20 @@ const loginUser: RequestHandler = async (req, res) => {
             message: 'Invalid password'
         });
     }
-    const token = jwt.sign({ userId: user._id }, APP_SECRET, { expiresIn: '3h' });
+    const token = jwt.sign(
+        { sub: String(user._id), username: user.username, role: user.role ?? 'USER' },
+        APP_SECRET,                              
+        { expiresIn: '3h' }
+    );
+
+    res.cookie('access_token', token, {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 3 * 60 * 60 * 1000, // 3 hours
+        path: '/',  
+    });
+
     return res.status(200).send({
         ok: true,
         message: 'Login successful',
@@ -85,7 +98,6 @@ const registerUser: RequestHandler = async (req, res) => {
             error: err.message ? err.message : err
         });
     }
-
 }
 
 const authController = {

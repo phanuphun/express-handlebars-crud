@@ -2,22 +2,22 @@
   "name": "app-notes-handlebars-express",
   "version": "1.0.0",
   "main": "server.js",
+  "ts-node": {
+    "files": true
+  },
   "scripts": {
     "clean": "rimraf dist",
-
     "copy:css:animated": "copyfiles -f node_modules/animate.css/animate.min.css public/css",
     "copy:css:notyf": "copyfiles -f node_modules/notyf/notyf.min.css public/css",
     "copy:js:notyf": "copyfiles -f node_modules/notyf/notyf.min.js public/javascript",
     "copy:notyf": "npm run copy:css:notyf && npm run copy:js:notyf",
-    
     "dev:css": "postcss public/css/app.dev.css -o public/css/app.css",
     "dev:css:watch": "npm run dev:css --watch",
     "dev:views:watch": "chokidar \"src/views/**/*.hbs\" -c \"npm run dev:css\"",
     "dev:animate:watch": "chokidar node_modules/animate.css/animate.min.css -c \"npm run copy:css:animated\"",
     "dev:notyf:watch": "chokidar node_modules/notyf/notyf.min.css -c \"npm run copy:notyf\"",
-    "dev:serve": "cross-env NODE_ENV=development nodemon",
+    "dev:serve": "cross-env NODE_ENV=development nodemon --exec \"ts-node --files src/server.ts\"",
     "dev": "npm run copy:css:animated && npm run copy:notyf && concurrently -n CSS,HBS,API \"npm:dev:css:watch\" \"npm:dev:views:watch\" \"npm:dev:serve\"",
-    
     "build:css": "postcss public/css/app.dev.css -o dist/public/css/app.css",
     "copy:views": "copyfiles -u 1 \"src/views/**/*\" dist/views",
     "copy:public": "copyfiles -u 1 \"public/**/*\" dist/public",
@@ -32,6 +32,7 @@
     "animate.css": "^4.1.1",
     "argon2": "^0.44.0",
     "axios": "^1.12.2",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "cross-env": "^10.1.0",
     "dotenv": "^17.2.3",
@@ -47,6 +48,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.16",
     "@types/connect-livereload": "^0.6.3",
+    "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.10",
